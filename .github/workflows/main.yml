@@ -1,12 +1,12 @@
 name: IAC
 on:
  push:
-   branches: [ main ]
+   branches: [ master ]
  pull_request:
-   branches: [ main ]
+   branches: [ master ]
 
 jobs:
- conviso-sast:
+ conviso-iac:
    runs-on: ubuntu-latest
    container:
      image: convisoappsec/flowcli

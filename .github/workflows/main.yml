@@ -1,0 +1,21 @@
+name: IAC
+on:
+ push:
+   branches: [ main ]
+ pull_request:
+   branches: [ main ]
+
+jobs:
+ conviso-sast:
+   runs-on: ubuntu-latest
+   container:
+     image: convisoappsec/flowcli
+     env:
+       FLOW_API_KEY:  ${{secrets.CONVISO_API_KEY}}
+       FLOW_PROJECT_CODE: ${{secrets.PROJECT_KEY}}
+       FLOW_API_URL: ${{secrets.HOMOLOGA_URL}}
+   steps:
+   - uses: actions/checkout@v2
+
+   - name: Run IAC
+     run: conviso iac run

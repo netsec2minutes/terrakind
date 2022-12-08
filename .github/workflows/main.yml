@@ -13,9 +13,8 @@ jobs:
      env:
        FLOW_API_KEY:  ${{secrets.CONVISO_API_KEY}}
        FLOW_PROJECT_CODE: ${{secrets.PROJECT_KEY}}
-       FLOW_API_URL: ${{secrets.HOMOLOGA_URL}}
    steps:
    - uses: actions/checkout@v2
 
-   - name: Run ast
-     run: conviso ast run
+   - name: Run iac
+     run: conviso iac run

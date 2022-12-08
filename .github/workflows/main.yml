@@ -17,5 +17,5 @@ jobs:
    steps:
    - uses: actions/checkout@v2
 
-   - name: Run IAC
-     run: conviso iac run
+   - name: Run ast
+     run: conviso ast run

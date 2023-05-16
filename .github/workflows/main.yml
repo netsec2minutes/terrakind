@@ -16,13 +16,13 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-       args: snyk code test / --sarif
+       args: snyk code test file:///github/workspace/ --sarif
 
     - name: Upload results
       uses: actions/upload-artifact@v3
       with:
         name: snyk.sarif
-        path: snyk.sarif
+        path: file:///github/workspace/
 
 
   import:

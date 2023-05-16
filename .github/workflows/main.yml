@@ -21,14 +21,14 @@ jobs:
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk iac test || true --sarif --sarif-file-output=snyk.sarif > ${{github.workspace }}/artifact/snyk.sarif      
      
-steps:
-- uses: actions/checkout@v3
-- run: cd ${{ github.workspace }}/artifact
-- run: echo hello > path/to/artifact/world.txt
-- uses: actions/upload-artifact@v3
-with:
- name: snyk.sarif 
- path: ${{ github.workspace }}/artifact
+      steps:
+      - uses: actions/checkout@v3
+      - run: cd ${{ github.workspace }}/artifact
+      - run: echo hello > path/to/artifact/world.txt
+      - uses: actions/upload-artifact@v3
+      with:
+       name: snyk.sarif 
+       path: ${{ github.workspace }}/artifact
    
   import:
     name: Conviso Findings Importation

@@ -16,12 +16,13 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        args: snyk iac test / --sarif-file-output=snyk.sarif
+        snyk code test ${{ github.workspace }} --sarif
        
     - name: Upload results
       uses: actions/upload-artifact@v3
       with:
         name: snyk.sarif
+        path: ${{ github.workspace }}
 
   import:
     name: Conviso Findings Importation

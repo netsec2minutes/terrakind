@@ -35,8 +35,11 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
+          sarif : true
           name: snyk.sarif
+          
 
       - name: SARIF Importation
         run: |
           conviso findings import-sarif --input-file snyk.sarif
+        

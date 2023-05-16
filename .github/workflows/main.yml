@@ -17,7 +17,6 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           sarif : true
-          args: --sarif-file-output=snyk.sarif
          
   import:
     name: Conviso Findings Importation
@@ -32,7 +31,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:

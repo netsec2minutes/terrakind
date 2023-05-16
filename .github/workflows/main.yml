@@ -1,19 +1,21 @@
-name: DAST
-on:
- push:
-   branches: [ master ]
- pull_request:
-   branches: [ master ]
+name: Example workflow using Snyk
+on: push
 jobs:
-  zap_scan:
+  security:
     runs-on: ubuntu-latest
-    name: Scan the webapplication
     steps:
-      - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.4.0
+      - uses: actions/checkout@master
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/nodemaster
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          target: 'http://35.81.32.236:3000'
-          report_json: report_json
+          args: --sarif-file-output=snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
         
   import:
     name: Conviso Findings Importation
@@ -36,4 +38,4 @@ jobs:
 
       - name: SARIF Importation
         run: |
-          conviso findings import-sarif --input-file results.sarif
+          conviso findings import-sarif --input-file snyk.sarif

@@ -16,6 +16,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
+          sarif : true
           args: --sarif-file-output=snyk.sarif
          
   import:
@@ -35,7 +36,6 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
-          sarif : true
           name: snyk.sarif
           
 

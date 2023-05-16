@@ -17,6 +17,14 @@ jobs:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         command: iac --sarif-file-output=snyk.sarif
+
+    - name: Upload results
+      uses: actions/upload-artifact@v3
+      with:
+        name: snyk.sarif
+        path: snyk.sarif
+
+
   import:
     name: Conviso Findings Importation
     needs: snyk

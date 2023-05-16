@@ -11,11 +11,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run Snyk to check Kubernetes manifest file for issues
-      continue-on-error: true
-      uses: snyk/actions/iac@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       run:
+        curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
+        chmod +x ./snyk
+        mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk code test --sarif --sarif-file-output=snyk.sarif
        

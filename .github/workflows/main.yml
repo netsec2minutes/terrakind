@@ -16,7 +16,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-      args: code test --sarif --sarif-file-output=
+        args: code test --sarif --sarif-file-output=snyk.sarif
        
     - name: Upload results
       uses: actions/upload-artifact@v3

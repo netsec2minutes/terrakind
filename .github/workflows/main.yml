@@ -16,7 +16,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        command: code test --sarif-file-output=snyk.sarif
+        command: iac --sarif-file-output=snyk.sarif
   import:
     name: Conviso Findings Importation
     needs: snyk

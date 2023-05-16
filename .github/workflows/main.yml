@@ -13,6 +13,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run Snyk to check Kubernetes manifest file for issues
       run: |
+        pwd
         curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/

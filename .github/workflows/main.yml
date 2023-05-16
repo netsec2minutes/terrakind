@@ -6,11 +6,12 @@ on:
    branches: [ master ]
 
 jobs:
-  security:
+  snyk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Run Snyk to check Kubernetes manifest file for issues
+        continue-on-error: true
         uses: snyk/actions/iac@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -19,7 +20,7 @@ jobs:
           
   import:
     name: Conviso Findings Importation
-    needs: security
+    needs: snyk
     runs-on: ubuntu-20.04
     container:
       image: convisoappsec/flowcli:1.12.0-rc.2

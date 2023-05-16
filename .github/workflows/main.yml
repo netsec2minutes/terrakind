@@ -9,10 +9,10 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-        with:
-          go-version: '1.19'
-      - name: Snyk test
+      - uses: actions/checkout@v2
+      - name: Run Snyk to check Kubernetes manifest file for issues
+        uses: snyk/actions/iac@master
+        env:
         with:
           args: --sarif-file-output=snyk.sarif
           

@@ -12,9 +12,8 @@ jobs:
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.4.0
         with:
-          target: '35.81.32.236:3000'
-          format: 'sarif'
-          output: results.sarif
+          target: 'http://35.81.32.236:3000'
+          report_json: report_json
         
   import:
     name: Conviso Findings Importation
@@ -33,7 +32,7 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
-          name: results.sarif
+          name: report_json
 
       - name: SARIF Importation
         run: |

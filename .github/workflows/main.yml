@@ -12,21 +12,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run Snyk to check Kubernetes manifest file for issues
-    env:
-      name: snyk.sarif
     - run: |
         mkdir -p ${{ github.workspace }}/artifact
+        cd ${{ github.workspace }}/artifact
         curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk iac test || true --sarif --sarif-file-output=snyk.sarif > ${{github.workspace }}/artifact/snyk.sarif      
      
-  
-     - uses: actions/upload-artifact@v3
-     with:
-       name: ${{ env.name }}-name
-       path: ${{ github.workspace }}/artifact/**/*
+steps:
+- uses: actions/checkout@v3
+- run: cd ${{ github.workspace }}/artifact
+- run: echo hello > path/to/artifact/world.txt
+- uses: actions/upload-artifact@v3
+with:
+ name: snyk.sarif 
+ path: ${{ github.workspace }}/artifact
    
   import:
     name: Conviso Findings Importation

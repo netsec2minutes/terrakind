@@ -18,13 +18,13 @@ jobs:
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk iac test || true --sarif --sarif-file-output=snyk.sarif
+        snyk iac test || true --sarif --sarif-file-output=snyk.sarif 
         
     - name: save results file
       uses: actions/upload-artifact@v3
       with:
         name: snyk.sarif
-        path: /tmp/snyk.sarif
+        path: /tmp/
 
           
   import:

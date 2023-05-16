@@ -35,7 +35,7 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
-          name: report_json
+          name: snyk.sarif
 
       - name: SARIF Importation
         run: |

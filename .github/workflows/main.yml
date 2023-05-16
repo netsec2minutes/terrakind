@@ -17,7 +17,7 @@ jobs:
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk iac test || true --sarif --sarif-file-output=snyk.sarif 
+        snyk iac test || true --sarif >> snyk.sarif 
         cp snyk.sarif /tmp
         
     - name: save results file

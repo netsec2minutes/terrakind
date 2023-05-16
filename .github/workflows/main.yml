@@ -4,21 +4,21 @@ on:
    branches: [ master ]
  pull_request:
    branches: [ master ]
- 
- jobs:
-   snyk:
+   
+
+jobs:
+  snyk:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     - name: Run Snyk to check Kubernetes manifest file for issues
-    - run: |
-        mkdir -p ${{ github.workspace }}/artifact
-        cd ${{ github.workspace }}/artifact
+      run: |
         curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk iac test || true --sarif --sarif-file-output=snyk.sarif > ${{github.workspace }}/artifact/snyk.sarif      
+        snyk iac test || true --sarif --sarif-file-output=snyk.sarif 
+       
    
   import:
     name: Conviso Findings Importation
@@ -43,4 +43,3 @@ on:
       - name: SARIF Importation
         run: |
           conviso findings import-sarif --input-file snyk.sarif
-        

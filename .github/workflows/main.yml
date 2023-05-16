@@ -15,12 +15,14 @@ jobs:
       uses: snyk/actions/iac@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        arg: snyk iac test /home/runner/work/terrakind/terrakind --sarif-file-output=snyk.sarif
        
     - name: Upload results
       uses: actions/upload-artifact@v3
       with:
         name: snyk.sarif
-        path: ${{ github.workspace }}
+        path: /home/runner/work/terrakind/terrakind
 
   import:
     name: Conviso Findings Importation

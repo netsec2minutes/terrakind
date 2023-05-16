@@ -16,14 +16,14 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-       args: snyk code test file:///github/workspace/snyk.sarif --sarif
-
+       args: snyk code test /github/workspace/snyk.sarif --sarif
+       args: ls -la
+       
     - name: Upload results
       uses: actions/upload-artifact@v3
       with:
         name: snyk.sarif
-        path: file:///github/workspace/
-
+        path: /github/workspace/
 
   import:
     name: Conviso Findings Importation

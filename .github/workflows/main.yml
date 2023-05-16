@@ -16,7 +16,7 @@ jobs:
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        command: iac --sarif-file-output=snyk.sarif
+        sarif: true
 
     - name: Upload results
       uses: actions/upload-artifact@v3

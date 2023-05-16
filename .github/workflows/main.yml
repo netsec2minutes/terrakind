@@ -29,7 +29,7 @@ jobs:
      name: snyk.sarif 
      path: ${{ github.workspace }}/artifact
    
-  import:
+   import:
     name: Conviso Findings Importation
     needs: snyk
     runs-on: ubuntu-20.04

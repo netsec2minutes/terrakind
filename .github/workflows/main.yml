@@ -21,7 +21,7 @@ jobs:
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk iac test || true --sarif --sarif-file-output=snyk.sarif > ${{github.workspace }}/artifact/snyk.sarif      
    
-   import:
+  import:
     name: Conviso Findings Importation
     needs: snyk
     runs-on: ubuntu-20.04

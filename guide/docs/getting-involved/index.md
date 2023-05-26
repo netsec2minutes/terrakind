@@ -1,4 +1,4 @@
-# 🎉 Getting Involved with Kubernetes Goat
+# 🎉 Getting Involved with Kubernetes 
 
 First of all, thank you so much for showing interest in Kubernetes Goat, we appreciate it ❤️
 

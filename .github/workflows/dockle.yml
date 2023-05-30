@@ -21,6 +21,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: dockle.sarif
+        path: /
         
   import:
     name: Conviso Findings Importation

@@ -13,8 +13,8 @@ jobs:
     - uses: goodwithtech/dockle-action@main
       with:
         image: vulnerables/web-dvwa
-        report-format: 'sarif'
-        report-name: dockle.sarif
+        report-format: sarif
+        report-name: dockle
         
     - name: save results file
       uses: actions/upload-artifact@v3
@@ -38,10 +38,9 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
-          name: snyk.sarif
-          path: /tmp
+          name: dockle.sarif
    
       - name: SARIF Importation
         run: |
           cd /tmp
-          conviso findings import-sarif --input-file dockle
+          conviso findings import-sarif --input-file dockle.sarif

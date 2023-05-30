@@ -13,8 +13,9 @@ jobs:
     - uses: goodwithtech/dockle-action@main
       with:
         image: vulnerables/web-dvwa
-        output: dockle
         format: sarif
+        output: dockle.sarif
+
                 
     - name: save results file
       uses: actions/upload-artifact@v3

@@ -15,6 +15,7 @@ jobs:
         image: vulnerables/web-dvwa
         format: sarif
         output: dockle.sarif
+        exit-code: 0
 
         
   import:

@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "master" ]
 
-jobs: dockle
+jobs: 
   build:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +26,7 @@ jobs: dockle
           
   import:
     name: Conviso Findings Importation
-    needs: dockle
+    needs: build
     runs-on: ubuntu-20.04
     container:
       image: convisoappsec/flowcli:1.12.0-rc.2

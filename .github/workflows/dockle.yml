@@ -17,11 +17,12 @@ jobs:
         output: dockle.sarif
         exit-code: 0
         
-    - name: save results file
+    - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: dockle.sarif
-        path: /tmp
+        path: dockle.sarif
+        retention-days: 5
         
   import:
     name: Conviso Findings Importation
@@ -41,7 +42,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dockle.sarif
-          path: /tmp
    
       - name: SARIF Importation
         run: |

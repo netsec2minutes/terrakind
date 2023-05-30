@@ -1,0 +1,50 @@
+name: dockle
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs: dockle
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    
+    - uses: goodwithtech/dockle-action@main
+      with:
+        image: my-image-name:$(date +%s)
+        report-format:: 'sarif'
+        
+    - name: save results file
+      uses: actions/upload-artifact@v3
+      with:
+        name: dockle.sarif
+          
+  import:
+    name: Conviso Findings Importation
+    needs: dockle
+    runs-on: ubuntu-20.04
+    container:
+      image: convisoappsec/flowcli:1.12.0-rc.2
+      env:
+       FLOW_API_KEY:  ${{secrets.CONVISO_API_KEY}}
+       FLOW_PROJECT_CODE: ${{secrets.PROJECT_KEY}}
+       FLOW_API_URL: ${{secrets.HOMOLOGA_URL}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Download result from previous scan
+        uses: actions/download-artifact@v3
+        with:
+          name: snyk.sarif
+          path: /tmp
+   
+      - name: SARIF Importation
+        run: |
+          cd /tmp
+          conviso findings import-sarif --input-file dockle

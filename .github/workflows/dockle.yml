@@ -16,12 +16,7 @@ jobs:
         format: sarif
         output: dockle.sarif
 
-                
-    - name: save results file
-      uses: actions/upload-artifact@v3
-      with:
-        name: dockle.sarif
-          
+        
   import:
     name: Conviso Findings Importation
     needs: dockle

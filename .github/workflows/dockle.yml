@@ -13,7 +13,8 @@ jobs:
     - uses: goodwithtech/dockle-action@main
       with:
         image: vulnerables/web-dvwa
-        report-format:: 'sarif'
+        report-format: 'sarif'
+        report-name: dockle.sarif
         
     - name: save results file
       uses: actions/upload-artifact@v3
@@ -22,7 +23,7 @@ jobs:
           
   import:
     name: Conviso Findings Importation
-    needs: build
+    needs: dockle
     runs-on: ubuntu-20.04
     container:
       image: convisoappsec/flowcli:1.12.0-rc.2

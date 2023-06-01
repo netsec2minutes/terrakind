@@ -1,5 +1,4 @@
 name: dockle
-
 on:
   push:
     branches: [ "master" ]

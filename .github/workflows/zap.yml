@@ -31,13 +31,14 @@ jobs:
 
     - name: Convert ZAP JSON report to SARIF
       run: |
-        python zap_to_sarif.py
+        python ./zap_to_sarif.py # Ajustei o caminho aqui, caso o arquivo esteja na raiz do projeto
+        # Ajuste o caminho de acordo com o local do seu arquivo 'zap_to_sarif.py'
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
       with:
         name: zap_report.sarif
-        path: zap_report.sarif
+        path: ./zap_report.sarif # Certifique-se de que esse é o caminho correto para o seu arquivo zap_report.sarif
         retention-days: 5
 
   import:
@@ -61,4 +62,4 @@ jobs:
    
       - name: SARIF Importation
         run: |
-          conviso findings import-sarif --input-file snyk.sarif
+          conviso findings import-sarif --input-file ./zap_report.sarif # Garanta que esse é o caminho correto para o arquivo zap_report.sarif após ele ter sido baixado

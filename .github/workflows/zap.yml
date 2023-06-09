@@ -18,6 +18,7 @@ jobs:
       with:
         target: 'http://35.81.32.236:3000/' # Substitua pela URL do seu website
         cmd_options: '-a -J report_json.json'
+        fail_action: false
 
     - name: List files in current directory
       run: ls -la

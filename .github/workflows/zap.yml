@@ -1,0 +1,65 @@
+name: OWASP ZAP Scan and Convert Report
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        target: 'http://35.81.32.236:3000/' # Substitua pela URL do seu website
+        cmd_options: '-a -J report.json' # Gerando um relatório JSON
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install jsonschema
+
+    - name: Convert ZAP JSON report to SARIF
+      run: |
+        python zap_to_sarif.py
+
+    - name: Upload SARIF file to GitHub
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: './zap_report.sarif'
+
+  import:
+    name: Conviso Findings Importation
+    needs: snyk
+    runs-on: ubuntu-20.04
+    container:
+      image: convisoappsec/flowcli:1.12.0-rc.2
+      env:
+       FLOW_API_KEY:  ${{secrets.CONVISO_API_KEY}}
+       FLOW_PROJECT_CODE: ${{secrets.PROJECT_KEY}}
+       FLOW_API_URL: ${{secrets.HOMOLOGA_URL}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Download result from previous scan
+        uses: actions/download-artifact@v3
+        with:
+          name: snyk.sarif
+          path: /tmp
+   
+      - name: SARIF Importation
+        run: |
+          cd /tmp
+          conviso findings import-sarif --input-file snyk.sarif

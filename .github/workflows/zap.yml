@@ -1,4 +1,3 @@
-
 name: Owasp zap
 on:
  push:
@@ -20,8 +19,10 @@ jobs:
         target: 'http://35.81.32.236:3000/' # Substitua pela URL do seu website
         cmd_options: '-a -J report.json' # Gerando um relatório JSON
 
-- name: List files in current directory
-  run: ls -la 
+    - name: List files in current directory
+      run: ls -la
+
+
 
     - name: Set up Python 3.9
       uses: actions/setup-python@v2

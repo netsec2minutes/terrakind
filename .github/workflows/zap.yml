@@ -33,10 +33,12 @@ jobs:
       run: |
         python zap_to_sarif.py
 
-    - name: Upload SARIF file to GitHub
-      uses: github/codeql-action/upload-sarif@v1
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
       with:
-        sarif_file: './zap_report.sarif'
+        name: zap_report.sarif
+        path: zap_report.sarif
+        retention-days: 5
 
   import:
     name: Conviso Findings Importation

@@ -1,4 +1,4 @@
-name: OWASP ZAP Scan and Convert Report
+name: zap
 on:
  push:
    branches: [ master ]
@@ -40,7 +40,7 @@ jobs:
 
   import:
     name: Conviso Findings Importation
-    needs: snyk
+    needs: zap
     runs-on: ubuntu-20.04
     container:
       image: convisoappsec/flowcli:1.12.0-rc.2
@@ -55,10 +55,8 @@ jobs:
       - name: Download result from previous scan
         uses: actions/download-artifact@v3
         with:
-          name: snyk.sarif
-          path: /tmp
+          name: zap_report.sarif
    
       - name: SARIF Importation
         run: |
-          cd /tmp
           conviso findings import-sarif --input-file snyk.sarif

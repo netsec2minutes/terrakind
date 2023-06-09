@@ -1,4 +1,4 @@
-name: zap
+name: Owasp zap
 on:
  push:
    branches: [ master ]
@@ -6,7 +6,7 @@ on:
    branches: [ master ]
 
 jobs:
-  zap_scan:
+  zap:
     runs-on: ubuntu-latest
 
     steps:

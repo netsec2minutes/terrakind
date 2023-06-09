@@ -50,15 +50,14 @@ def convert_zap_json_to_sarif(json_report):
     return json.dumps(sarif_report)
 
 
-if __name__ == "__main__":
-    # Definindo o caminho absoluto para o relatório ZAP JSON
-    zap_report_path = os.path.join(os.getenv('GITHUB_WORKSPACE', ''), 'report.json')
+zap_report_path = os.path.join(os.getcwd(), 'report_json.json') # Modificado para refletir o nome correto do arquivo
 
-    with open(zap_report_path) as zap_report_file:
-        zap_json_report = zap_report_file.read()
-    
-    sarif_report = convert_zap_json_to_sarif(zap_json_report)
+with open(zap_report_path) as zap_report_file:
+    zap_report = zap_report_file.read()
 
-    # Salvando o relatório SARIF na pasta raiz do repositório
-    with open(os.path.join(os.getenv('GITHUB_WORKSPACE', ''), 'zap_report.sarif'), 'w') as sarif_report_file:
-        sarif_report_file.write(sarif_report)
+sarif_report = convert_zap_json_to_sarif(zap_report)
+
+sarif_report_path = os.path.join(os.getcwd(), 'zap_report.sarif')
+
+with open(sarif_report_path, 'w') as sarif_report_file:
+    sarif_report_file.write(sarif_report)

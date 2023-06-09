@@ -1,60 +1,64 @@
-import json
-import os
 
-def convert_zap_json_to_sarif(json_report):
-    sarif_report = {
-        "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
-        "version": "2.1.0",
-        "runs": [
-            {
-                "tool": {
-                    "driver": {
-                        "name": "OWASP ZAP",
-                        "rules": []
-                    }
-                },
-                "results": []
-            }
-        ]
-    }
+name: Owasp zap
+on:
+ push:
+   branches: [ master ]
+ pull_request:
+   branches: [ master ]
 
-    zap_report = json.loads(json_report)
-    for alert in zap_report['alerts']:
-        rule_id = alert['pluginid']
-        sarif_report['runs'][0]['tool']['driver']['rules'].append({
-            "id": rule_id,
-            "name": alert['alert'],
-            "shortDescription": {
-                "text": alert['desc']
-            },
-            "helpUri": alert['reference']
-        })
+jobs:
+  zap:
+    runs-on: ubuntu-latest
 
-        sarif_report['runs'][0]['results'].append({
-            "ruleId": rule_id,
-            "level": "error",
-            "message": {
-                "text": alert['alert']
-            },
-            "locations": [
-                {
-                    "physicalLocation": {
-                        "artifactLocation": {
-                            "uri": alert['url']
-                        }
-                    }
-                }
-            ]
-        })
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
 
-    return sarif_report
+    - name: OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        target: 'http://35.81.32.236:3000/' # Substitua pela URL do seu website
+        cmd_options: '-a -J report.json' # Gerando um relatório JSON
 
-with open('./report.json') as zap_report_file:  # Ajustei o caminho aqui
-    zap_report = json.load(zap_report_file)
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
 
-sarif_report = convert_zap_json_to_sarif(zap_report)
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install jsonschema
+    - name: Convert ZAP JSON report to SARIF
+      run: |
+        python ./zap_to_sarif.py # Ajustei o caminho aqui, caso o arquivo esteja na raiz do projeto
+        # Ajuste o caminho de acordo com o local do seu arquivo 'zap_to_sarif.py'
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: zap_report.sarif
+        path: ./zap_report.sarif # Certifique-se de que esse é o caminho correto para o seu arquivo zap_report.sarif
+        retention-days: 5
 
-with open('./zap_report.sarif', 'w') as sarif_report_file:  # Garantindo que o relatório SARIF seja salvo na raiz do repositório
-    json.dump(sarif_report, sarif_report_file, indent=4)
-
-print(os.path.abspath('./zap_report.sarif'))  # Imprimindo o caminho absoluto para o arquivo SARIF
+  import:
+    name: Conviso Findings Importation
+    needs: zap
+    runs-on: ubuntu-20.04
+    container:
+      image: convisoappsec/flowcli:1.12.0-rc.2
+      env:
+       FLOW_API_KEY:  ${{secrets.CONVISO_API_KEY}}
+       FLOW_PROJECT_CODE: ${{secrets.PROJECT_KEY}}
+       FLOW_API_URL: ${{secrets.HOMOLOGA_URL}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Download result from previous scan
+        uses: actions/download-artifact@v3
+        with:
+          name: zap_report.sarif
+   
+      - name: SARIF Importation
+        run: |
+          conviso findings import-sarif --input-file ./zap_report.sarif # Garanta que esse é o caminho correto para o arquivo zap_report.sarif após ele ter sido baixado

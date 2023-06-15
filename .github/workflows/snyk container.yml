@@ -1,4 +1,4 @@
-name: Snyk
+name: SnykContainer
 on:
  push:
    branches: [ master ]

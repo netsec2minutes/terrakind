@@ -18,7 +18,7 @@ jobs:
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
         snyk container test bkimminich/juice-shop --file=Dockerfile --sarif-file-output=/tmp/snyk.sarif || true
-              
+        cat /tmp/snyk.sarif    
     - name: save results file
       uses: actions/upload-artifact@v3
       with:

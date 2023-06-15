@@ -17,9 +17,9 @@ jobs:
         chmod +x ./snyk
         mv ./snyk /usr/local/bin/
         snyk auth ${{ secrets.SNYK_TOKEN }}
-        snyk container test qiell/juiceshop --sarif > snyk.sarif || true
-        cp snyk.sarif /tmp
-       
+        cd /tmp
+        snyk container test qiell/juiceshop --sarif-file-output=snyk.sarif || true
+              
     - name: save results file
       uses: actions/upload-artifact@v3
       with:

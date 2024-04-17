@@ -1,0 +1,62 @@
+# Este fluxo de trabalho usa ações que não são certificadas pelo GitHub.
+# Elas são fornecidas por um terceiro e são regidas por
+# termos de serviço, política de privacidade e documentação de suporte
+# separados.
+
+name: Sysdig - Build, scan, push and upload sarif report
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  schedule:
+    - cron: '23 1 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+
+  build:
+
+    permissions:
+      checks: write # para que sysdiglabs/scan-action publique as verificações
+      contents: read # para que actions/checkout obtenha o código
+      security-events: write # para github/codeql-action/upload-sarif fazer upload dos resultados SARIF
+      actions: read # apenas necessário para um repositório privado por github/codeql-action/upload-sarif para obter o status da execução da Ação
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build the Docker image
+      # Marcar a imagem a ser construída
+      # Altere a variável ${{ github.repository }} por outro nome de imagem se desejar, mas não se esqueça de alterar também a tag da imagem abaixo
+      run: docker build . --file Dockerfile --tag ${{ github.repository }}:latest
+
+    - name: Sysdig Secure Inline Scan
+      id: scan
+      uses: sysdiglabs/scan-action@768d7626a14897e0948ea89c8437dd46a814b163
+      with:
+        # Tag da imagem a ser analisada.
+        # Altere a variável ${{ github.repository }} por outro nome de imagem se desejar, mas não se esqueça de alterar também a tag da imagem acima
+        image-tag: ${{ github.repository }}:latest
+        # Token de API para autenticação do Sysdig Scanning
+        sysdig-secure-token: ${{ secrets.SYSDIG_SECURE_TOKEN}}
+        # Endpoint seguro do Sysdig. Por favor, leia: https://docs.sysdig.com/en/docs/administration/saas-regions-and-ip-ranges/
+        # US-East https://secure.sysdig.com
+        # US-West https://us2.app.sysdig.com
+        # EU      https://eu1.app.sysdig.com
+        sysdig-secure-url: https://us2.app.sysdig.com
+        dockerfile-path: ./Dockerfile
+        input-type: docker-daemon
+        ignore-failed-scan: true
+        # O scanner inline do Sysdig requer direitos privilegiados
+        run-as-user: root
+
+    - name: Upload SARIF file
+      if: always()
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarifReport }}
